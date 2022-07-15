@@ -14,6 +14,7 @@ const handleValidationError = (err, res) => {
 };
 
 const TypeError = (err, req, res, next) => {
+  console.log(err)
   const errOrigin = err.origin;
   if (err.name === "ValidationError") {
     return (err = handleValidationError(err, res));
