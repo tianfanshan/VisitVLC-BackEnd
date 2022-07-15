@@ -7,7 +7,7 @@ const jwt_secret = process.env.jwt_secret;
 const UserController = {
   async register(req, res, next) {
     try {
-      const password = bcrypt.hashSync(req.body.password);
+      const password = bcrypt.hashSync(req.body.password, 10);
       const user = await User.create({
         ...req.body,
         password: password,
@@ -39,6 +39,77 @@ const UserController = {
       res
         .status(500)
         .send({ message: "There has been a problem on the server" });
+    }
+  },
+  async logout(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(req.user._id, {
+        $pull: { tokens: req.headers.authorization },
+      });
+      res.status(200).send({ message: "User logged out successfully", user });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "there has been a problem disconnecting the user" });
+    }
+  },
+  async update(req, res) {
+    try {
+      const { firstName, lastName, gender, disabled } = req.body;
+      const hashpassword = bcrypt.hashSync(req.body.password, 10);
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { firstName, password: hashpassword, lastName, gender, disabled },
+        { new: true }
+      );
+      res.status(200).send({ message: "User update successfully", user });
+    } catch (error) {
+      console.error(error);
+      res.send(error);
+    }
+  },
+  async findUserByFirstName(req, res) {
+    try {
+      if (req.body.firstName.length > 20) {
+        return res.status(400).send("Search too long");
+      }
+      const firstName = new RegExp(req.body.firstName, "i");
+      const user = await User.find({ firstName });
+      res.status(200).send({ message: "User found successfully", user });
+    } catch (error) {
+      console.error(error);
+      res.send(error);
+    }
+  },
+  async findUserById(req, res) {
+    try {
+      const user = await User.findById(req.params._id);
+      if (!user) {
+        res.status(404).send("This user does not exist");
+      }
+      res.status(200).send({ message: "User found successfully", user });
+    } catch (error) {
+      console.error(error);
+      res.send(error);
+    }
+  },
+  async findAllUser(req, res) {
+    try {
+      const users = await User.find();
+      res.status(200).send({message:"All users found",users})
+    } catch (error) {
+      console.error(error)
+      res.send(error)
+    }
+  },
+  async deleteUserById(req, res) {
+    try {
+      const user = await User.findByIdAndDelete(req.params._id);
+      res.status(200).send({ message: "User delete successfyly", user });
+    } catch (error) {
+      console.error(error);
+      res.send(error);
     }
   },
 };
