@@ -17,7 +17,7 @@ const authentication = async (req, res, next) => {
     console.error(error);
     return res
       .status(500)
-      .send({ error, message: "There was a problem with the token" });
+      .send({ error, message: "There has been a problem with the token" });
   }
 };
 
