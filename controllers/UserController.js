@@ -8,6 +8,7 @@ const UserController = {
   async register(req, res, next) {
     try {
       const password = bcrypt.hashSync(req.body.password, 10);
+      console.log('aaaaaaaa',req.body.password)
       const user = await User.create({
         ...req.body,
         password: password,

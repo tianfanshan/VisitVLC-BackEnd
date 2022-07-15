@@ -1,27 +1,23 @@
 const handleValidationError = (err, res) => {
-  let errors = Object.values(err.errors).map((el) => {
-    if (errors.length > 1) {
-      let chain = "";
-      for (let i = 0; i < errors.length; i++) {
-        chain += errors[i] + "||";
-      }
-      const string = chain.slice(0, -4);
-      res.status(400).send({ messages: string });
-    } else {
-      res.status(400).send({ messages: errors });
+  let errors = Object.values(err.errors).map((el) => el.message);
+  if (errors.length > 1) {
+    let chain = "";
+    for (let i = 0; i < errors.length; i++) {
+      chain += errors[i] + "||";
     }
-  });
+    const string = chain.slice(0, -4);
+    res.status(400).send({ messages: string });
+  } else {
+    res.status(400).send({ messages: errors });
+  }
 };
 
 const TypeError = (err, req, res, next) => {
-  console.log(err)
   const errOrigin = err.origin;
   if (err.name === "ValidationError") {
     return (err = handleValidationError(err, res));
   } else if (err.code === 11000) {
-    res
-      .status(400)
-      .send(`The field ${Object.keys(err.keyPattern)} has to be unique`);
+    res.status(400).send(`The ${Object.keys(err.keyPattern)} has to be unique`);
   } else if (errOrigin === undefined) {
     res.status(500).send("An error of unknown origin has occurred");
   } else {

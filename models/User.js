@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      required: [true, "Please enter your date of birth"],
+      required: [true, "Please enter your date of birth"]
     },
     disabled: {
       type: Boolean,
@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please enter your password"],
+      required: [true, "Please enter your password"]
     },
     tokens: [],
     evaluationIds: [{ type: Object, ref: "evaluation" }],
