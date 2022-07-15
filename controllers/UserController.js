@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
@@ -7,14 +7,16 @@ const jwt_secret = process.env.jwt_secret;
 const UserController = {
   async register(req, res, next) {
     try {
-      const password = bcrypt.hashSync(req.body.password, 10);
-      console.log('aaaaaaaa',req.body.password)
-      const user = await User.create({
-        ...req.body,
-        password: password,
-        role: "user",
-      });
-      res.status(201).send({ message: "User created", user });
+      if(req.body.password){
+        req.body.password = await bcrypt.hashSync(req.body.password, 10);
+        const user = await User.create({
+          ...req.body,
+          role: "user",
+        });
+        res.status(201).send({ message: "User created", user });
+      }else{
+        res.status(400).send({message:'Please enter your password'})
+      }
     } catch (error) {
       console.error(error);
       error.origin = "User";
@@ -25,11 +27,11 @@ const UserController = {
     try {
       const user = await User.findOne({ email: req.body.email });
       if (!user) {
-        return res.status(400).send("Incorrect username or password");
+        return res.status(400).send({message:"Incorrect username or password"});
       }
       const isMatch = bcrypt.compareSync(req.body.password, user.password);
       if (!isMatch) {
-        return res.status(400).send("Incorrect username or password");
+        return res.status(400).send({message:"Incorrect username or password"});
       }
       token = jwt.sign({ _id: user._id }, jwt_secret);
       if (user.tokens.length > 4) user.tokens.shift();
@@ -87,7 +89,7 @@ const UserController = {
     try {
       const user = await User.findById(req.params._id);
       if (!user) {
-        res.status(404).send("This user does not exist");
+        res.status(404).send({message:"This user does not exist"});
       }
       res.status(200).send({ message: "User found successfully", user });
     } catch (error) {
