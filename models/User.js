@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         "The email format is incorrect",
       ],
-      require: [true, "Please enter your mail"],
+      required: [true, "Please enter your mail"],
       unique: true,
     },
     dateOfBirth: {
