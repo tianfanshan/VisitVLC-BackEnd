@@ -25,6 +25,7 @@ const UserController = {
     },
     async login(req, res, next) {
         try {
+            console.log('entra')
             const user = await User.findOne({ email: req.body.email });
             if (!user) {
                 return res
