@@ -21,7 +21,7 @@ const RouteSchema = new mongoose.Schema(
             type: String
         },
         tags: [],
-        evaluation: [{ type: ObjectId, ref: "User" }]
+        // evaluation: [{ type: ObjectId, ref: "User" }]
     }, { timestamps: true }
 )
 

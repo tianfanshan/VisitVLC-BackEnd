@@ -12,6 +12,7 @@ app.use(express.json());
 dbConnection();
 
 app.use("/users", require("./routes/users"));
+app.use("/routes",require("./routes/routes"))
 
 app.use(TypeError);
 
