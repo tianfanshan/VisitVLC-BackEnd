@@ -7,15 +7,15 @@ const jwt_secret = process.env.jwt_secret;
 const UserController = {
   async register(req, res, next) {
     try {
-      if(req.body.password){
+      if (req.body.password) {
         req.body.password = await bcrypt.hashSync(req.body.password, 10);
         const user = await User.create({
           ...req.body,
           role: "user",
         });
         res.status(201).send({ message: "User created", user });
-      }else{
-        res.status(400).send({message:'Please enter your password'})
+      } else {
+        res.status(400).send({ message: "Please enter your password" });
       }
     } catch (error) {
       console.error(error);
@@ -23,15 +23,19 @@ const UserController = {
       next(error);
     }
   },
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const user = await User.findOne({ email: req.body.email });
       if (!user) {
-        return res.status(400).send({message:"Incorrect username or password"});
+        return res
+          .status(400)
+          .send({ message: "Incorrect username or password" });
       }
       const isMatch = bcrypt.compareSync(req.body.password, user.password);
       if (!isMatch) {
-        return res.status(400).send({message:"Incorrect username or password"});
+        return res
+          .status(400)
+          .send({ message: "Incorrect username or password" });
       }
       token = jwt.sign({ _id: user._id }, jwt_secret);
       if (user.tokens.length > 4) user.tokens.shift();
@@ -39,9 +43,9 @@ const UserController = {
       await user.save();
       return res.send({ message: "Welcome " + user.name, token, user });
     } catch (error) {
-      res
-        .status(500)
-        .send({ message: "There has been a problem on the server" });
+      console.error(error);
+      error.origin = "User";
+      next(error);
     }
   },
   async logout(req, res) {
@@ -69,7 +73,7 @@ const UserController = {
       res.status(200).send({ message: "User update successfully", user });
     } catch (error) {
       console.error(error);
-      res.send(error);
+      res.status(500).send(error);
     }
   },
   async findUserByFirstName(req, res) {
@@ -82,28 +86,28 @@ const UserController = {
       res.status(200).send({ message: "User found successfully", user });
     } catch (error) {
       console.error(error);
-      res.send(error);
+      res.status(500).send(error);
     }
   },
   async findUserById(req, res) {
     try {
       const user = await User.findById(req.params._id);
       if (!user) {
-        res.status(404).send({message:"This user does not exist"});
+        res.status(404).send({ message: "This user does not exist" });
       }
       res.status(200).send({ message: "User found successfully", user });
     } catch (error) {
       console.error(error);
-      res.send(error);
+      res.status(500).send(error);
     }
   },
   async findAllUser(req, res) {
     try {
       const users = await User.find();
-      res.status(200).send({message:"All users found",users})
+      res.status(200).send({ message: "All users found", users });
     } catch (error) {
-      console.error(error)
-      res.send(error)
+      console.error(error);
+      res.status(500).send(error);
     }
   },
   async deleteUserById(req, res) {
@@ -112,7 +116,7 @@ const UserController = {
       res.status(200).send({ message: "User delete successfyly", user });
     } catch (error) {
       console.error(error);
-      res.send(error);
+      res.status(500).send(error);
     }
   },
 };

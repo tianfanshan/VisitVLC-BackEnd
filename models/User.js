@@ -36,8 +36,7 @@ const UserSchema = new mongoose.Schema(
       required: [true],
     },
     password: {
-      type: String,
-      required: [true, "Please enter your password"]
+      type: String
     },
     tokens: [],
     evaluationIds: [{ type: Object, ref: "evaluation" }],
