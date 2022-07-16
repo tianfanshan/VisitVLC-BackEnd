@@ -21,13 +21,9 @@ const RouteSchema = new mongoose.Schema(
             type: String
         },
         tags: [],
-        evaluation: [{ type: Object, ref: "evaluation" }]
+        evaluation: [{ type: ObjectId, ref: "User" }]
     }, { timestamps: true }
 )
-
-RouteSchema.methods.toJSON = function () {
-
-}
 
 const Route = mongoose.model("Route", RouteSchema);
 
