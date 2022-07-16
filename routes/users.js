@@ -4,8 +4,9 @@ const UserController = require("../controllers/UserController");
 const {
   authentication,
   isAdmin,
-  isOwner,
+  isOwner
 } = require("../middleware/authentication");
+
 
 router.post("/", UserController.register);
 router.post("/login", UserController.login);
@@ -17,7 +18,7 @@ router.get("/users", authentication, UserController.findAllUser);
 router.delete(
   "/user_Id/:_id",
   authentication,
-  isOwner || isAdmin,
+  isAdmin,
   UserController.deleteUserById
 );
 
