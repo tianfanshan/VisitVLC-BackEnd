@@ -21,4 +21,28 @@ const authentication = async (req, res, next) => {
   }
 };
 
-module.exports = { authentication };
+const isAdmin = async (req, res, next) => {
+  const admins = ["admin"];
+  if (!admins.includes(req.user.role)) {
+    return res.status(403).send({
+      message: "You do not have permission",
+    });
+  }
+  next();
+};
+
+const isOwner = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params._id);
+    if (user._id.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ message: "This is not your account" });
+    }
+    next();
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: "There has been a problem confirming the user" });
+  }
+};
+
+module.exports = { authentication, isAdmin, isOwner };
