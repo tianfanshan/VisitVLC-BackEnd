@@ -5,9 +5,6 @@ const axios = require("axios")
 
 const RouteSchema = new mongoose.Schema(
     {
-        id: {
-            type: Number
-        },
         name: {
             type: String
         },
@@ -52,6 +49,6 @@ async function getRoutes() {
     })
 }
 
-getRoutes()
+// getRoutes()
 
 module.exports = Route;

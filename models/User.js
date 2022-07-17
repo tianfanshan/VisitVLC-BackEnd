@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const UserSchema = new mongoose.Schema(
   {
@@ -39,9 +40,9 @@ const UserSchema = new mongoose.Schema(
       type: String
     },
     tokens: [],
-    evaluationIds: [{ type: Object, ref: "evaluation" }],
-    favoritePlace: [{ type: Object, ref: "favoritePlace" }],
-    favoriteRoute: [{ type: Object, ref: "favoriteRoute" }],
+    commentIds: [{ type: ObjectId, ref: "Comment" }],
+    // favoriteRouteIds: [{ type: ObjectId, ref: "Route" }],
+    // favoritePlaceIds: [{ type: ObjectId, ref: "Place" }],
   },
   { timestamps: true }
 );
