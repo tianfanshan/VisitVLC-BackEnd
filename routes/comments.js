@@ -6,4 +6,4 @@ const { authentication, isOwner } = require("../middleware/authentication");
 router.post("/create", authentication, CommentController.createComment);
 router.delete("/id/:_id", authentication, isOwner, CommentController.deleteComment);
 
-module.exports;
+module.exports = router;
