@@ -41,8 +41,9 @@ const UserSchema = new mongoose.Schema(
     },
     tokens: [],
     commentIds: [{ type: ObjectId, ref: "Comment" }],
-    // favoriteRouteIds: [{ type: ObjectId, ref: "Route" }],
-    // favoritePlaceIds: [{ type: ObjectId, ref: "Place" }],
+    // evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
+    favoriteRouteIds: [{ type: String }],
+    favoritePlaceIds: [{ type: String }]
   },
   { timestamps: true }
 );

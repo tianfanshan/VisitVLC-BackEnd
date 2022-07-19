@@ -4,13 +4,18 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const CommentSchema = new mongoose.Schema(
     {
         comment: String,
-        userId: { type: ObjectId, ref: "User" },
-        evaluation: {
-            type:Number,
-            required:true
+        userId: {
+            type: ObjectId,
+            ref: "User"
+        },
+        routeId: {
+            type: String,
+            required: true
+        },
+        placeId: {
+            rtpe: String,
+            required: true
         }
-        // routeId:{type:ObjectId,ref:""}
-        // placeId:{type:ObjectId,ref:""}
     }, { timestamps: true }
 );
 
