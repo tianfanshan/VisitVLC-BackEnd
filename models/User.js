@@ -4,12 +4,12 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        minlength: 3,
+        minlength: [3,"Please enter at least three characters in the first name"],
         required: [true, "Please enter your first name"],
     },
     lastName: {
         type: String,
-        minlength: 3,
+        minlength: [3,"Please enter at least three characters in the last name"],
         required: [true, "Please enter your last name"],
     },
     role: {
@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
     },
     tokens: [],
     commentIds: [{ type: ObjectId, ref: "Comment" }],
-    // evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
+    evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: String }],
     favoritePlaceIds: [{ type: String }]
 }, { timestamps: true });

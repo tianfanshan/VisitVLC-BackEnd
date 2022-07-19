@@ -82,9 +82,9 @@ const UserController = {
     },
     async findUserById(req, res) {
         try {
-            if(req.params._id.length !== 24){
-                res.status(400).send({message:"This user dose not exist"})
-            }else{
+            if (req.params._id.length !== 24) {
+                res.status(400).send({ message: "This user dose not exist" })
+            } else {
                 const user = await User.findById(req.params._id);
                 if (user == null) {
                     res.status(404).send({ message: "This user does not exist" });
@@ -99,7 +99,10 @@ const UserController = {
     },
     async findAllUser(req, res) {
         try {
-            const users = await User.find();
+            const { page = 0, limit = 2 } = req.query;
+            const users = await User.find()
+                .limit(limit)
+                .skip(page * limit)
             res.status(200).send({ message: "All users found", users });
         } catch (error) {
             console.error(error);
@@ -108,13 +111,13 @@ const UserController = {
     },
     async deleteUserById(req, res) {
         try {
-            if(req.params._id.length !== 24){
-                res.status(400).send({message:"This user dose not exist"})
-            }else{
+            if (req.params._id.length !== 24) {
+                res.status(400).send({ message: "This user dose not exist" })
+            } else {
                 const user = await User.findByIdAndDelete(req.params._id);
                 if (user == null) {
                     res.status(404).send({ message: "This user does not exist" });
-                }else{
+                } else {
                     res.status(200).send({ message: "User delete successfyly", user });
                 }
             }
