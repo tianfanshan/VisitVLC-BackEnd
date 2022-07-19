@@ -14,7 +14,6 @@ app.use(cors())
 dbConnection();
 
 app.use("/users", require("./routes/users"));
-app.use("/routes",require("./routes/routes"));
 app.use("/comments",require("./routes/comments"));
 
 app.use(TypeError);
