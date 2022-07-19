@@ -25,7 +25,6 @@ const UserController = {
     },
     async login(req, res, next) {
         try {
-            console.log('entra')
             const user = await User.findOne({ email: req.body.email });
             if (!user) {
                 return res
@@ -62,39 +61,37 @@ const UserController = {
                 .send({ message: "there has been a problem disconnecting the user" });
         }
     },
-    async update(req, res) {
+    async update(req, res, next) {
         try {
+            if (!req.body.password) {
+                res.status(400).send({ message: "Please enter you password" })
+            }
             const { firstName, lastName, gender, disabled } = req.body;
             const hashpassword = bcrypt.hashSync(req.body.password, 10);
             const user = await User.findByIdAndUpdate(
-                req.user._id, { firstName, password: hashpassword, lastName, gender, disabled }, { new: true }
+                req.user._id,
+                { firstName, password: hashpassword, lastName, gender, disabled },
+                { new: true, runValidators: true, }
             );
             res.status(200).send({ message: "User update successfully", user });
         } catch (error) {
             console.error(error);
-            res.status(500).send(error);
-        }
-    },
-    async findUserByFirstName(req, res) {
-        try {
-            if (req.body.firstName.length > 20) {
-                return res.status(400).send("Search too long");
-            }
-            const firstName = new RegExp(req.body.firstName, "i");
-            const user = await User.find({ firstName });
-            res.status(200).send({ message: "User found successfully", user });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
+            error.origin = "User";
+            next(error);
         }
     },
     async findUserById(req, res) {
         try {
-            const user = await User.findById(req.params._id);
-            if (!user) {
-                res.status(404).send({ message: "This user does not exist" });
+            if(req.params._id.length !== 24){
+                res.status(400).send({message:"This user dose not exist"})
+            }else{
+                const user = await User.findById(req.params._id);
+                if (user == null) {
+                    res.status(404).send({ message: "This user does not exist" });
+                } else {
+                    res.status(200).send({ message: "User found successfully", user });
+                }
             }
-            res.status(200).send({ message: "User found successfully", user });
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
@@ -111,8 +108,16 @@ const UserController = {
     },
     async deleteUserById(req, res) {
         try {
-            const user = await User.findByIdAndDelete(req.params._id);
-            res.status(200).send({ message: "User delete successfyly", user });
+            if(req.params._id.length !== 24){
+                res.status(400).send({message:"This user dose not exist"})
+            }else{
+                const user = await User.findByIdAndDelete(req.params._id);
+                if (user == null) {
+                    res.status(404).send({ message: "This user does not exist" });
+                }else{
+                    res.status(200).send({ message: "User delete successfyly", user });
+                }
+            }
         } catch (error) {
             console.error(error);
             res.status(500).send(error);

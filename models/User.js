@@ -4,15 +4,16 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
+        minlength: 3,
         required: [true, "Please enter your first name"],
     },
     lastName: {
         type: String,
+        minlength: 3,
         required: [true, "Please enter your last name"],
     },
     role: {
-        type: String,
-        default: "user",
+        type: String
     },
     gender: {
         type: String,
@@ -35,8 +36,7 @@ const UserSchema = new mongoose.Schema({
         type: Boolean
     },
     password: {
-        type: String,
-        required: [true, "Please enter your password"]
+        type: String
     },
     tokens: [],
     commentIds: [{ type: ObjectId, ref: "Comment" }],
@@ -45,7 +45,7 @@ const UserSchema = new mongoose.Schema({
     favoritePlaceIds: [{ type: String }]
 }, { timestamps: true });
 
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function () {
     const user = this._doc;
     delete user.tokens;
     delete user.password;

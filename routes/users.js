@@ -12,13 +12,12 @@ router.post("/", UserController.register);
 router.post("/login", UserController.login);
 router.delete("/logout", authentication, UserController.logout);
 router.put("/update", authentication, UserController.update);
-router.get("/firstName", UserController.findUserByFirstName);
 router.get("/user_Id/:_id", UserController.findUserById);
-router.get("/users", authentication, UserController.findAllUser);
+router.get("/users", authentication, isAdmin, UserController.findAllUser);
 router.delete(
   "/user_Id/:_id",
   authentication,
-  isAdmin,
+  // isAdmin,
   UserController.deleteUserById
 );
 
