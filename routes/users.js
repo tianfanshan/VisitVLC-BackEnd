@@ -17,7 +17,7 @@ router.get("/users", authentication, isAdmin, UserController.findAllUser);
 router.delete(
   "/user_Id/:_id",
   authentication,
-  // isAdmin,
+  isAdmin,
   UserController.deleteUserById
 );
 
