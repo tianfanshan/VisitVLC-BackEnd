@@ -15,14 +15,14 @@ const CommentSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "User"
     },
-    routeId: {
-        type: String,
-        required: true
-    },
-    placeId: {
-        type: String,
-        required: true
-    }
+    // routeId: {
+    //     type: String,
+    //     required: true
+    // },
+    // placeId: {
+    //     type: String,
+    //     required: true
+    // }
 }, { timestamps: true });
 
 const Comment = mongoose.model("Comment", CommentSchema);

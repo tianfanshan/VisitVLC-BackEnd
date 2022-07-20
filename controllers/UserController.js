@@ -99,7 +99,8 @@ const UserController = {
     },
     async findAllUser(req, res) {
         try {
-            const { page = 0, limit = 2 } = req.query;
+            const limit = 2
+            const { page = 0 } = req.query;
             const users = await User.find()
                 .limit(limit)
                 .skip(page * limit)
