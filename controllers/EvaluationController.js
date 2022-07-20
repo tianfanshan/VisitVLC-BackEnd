@@ -3,7 +3,6 @@ const User = require("../models/User");
 const axios = require("axios")
 
 
-
 const EvaluationController = {
     async createEvaluation(req, res, next) {
         try {
@@ -47,13 +46,13 @@ const EvaluationController = {
             res.status(500).send({ message: "There has been a problem deleting a evaluation" })
         }
     },
-    async getAllEvaluation(req,res){
+    async getAllEvaluation(req, res) {
         try {
             const evaluations = await Evaluation.find()
-            res.status(200).send({message:"All evaluation finded",evaluations})
+            res.status(200).send({ message: "All evaluation finded", evaluations })
         } catch (error) {
             console.error(error)
-            res.status(500).send({message:"There has been a problem to get all evaluations"})
+            res.status(500).send({ message: "There has been a problem to get all evaluations" })
         }
     }
 };
