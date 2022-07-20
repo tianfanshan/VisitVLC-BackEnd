@@ -2,6 +2,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.JWT_SECRET;
+const mongoose = require('mongoose');
 
 const authentication = async (req, res, next) => {
   try {
@@ -31,30 +32,32 @@ const isAdmin = async (req, res, next) => {
   next();
 };
 
-const isOwner = async (req, res, next) => {
+const isUserOrAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params._id);
-    if (user._id.toString() !== req.user._id.toString()) {
-      return res.status(403).send({ message: "This is not your account" });
+    if (req.user.role == "admin" || req.user._id == req.params._id) {
+      return next()
+    } else {
+      res.status(400).send({ message: "You do not have permission" })
     }
-    next();
   } catch (error) {
-    return res
-      .status(500)
-      .send({ message: "There has been a problem confirming the user" });
+    console.error(error)
+    res.status(500).send({ message: "There has been a problem with serve" })
   }
-};
+}
 
-const isYourEvaluation = async (req, res, next) => {
+const isYourEvaluationOrAdmin = async (req, res, next) => {
   try {
-    if (!req.user.evaluationIds.includes(req.params._id)) {
-      return res.status(403).send({ message: "Sorry this is not you evaluation" })
+    const id = await req.user.evaluationIds.map((e) => {
+      return e.toString()
+    })
+    if (id.includes(req.params._id) || req.user.role == "admin") {
+      return next()
     }
-    next()
+    return res.status(403).send({ message: "Sorry you have not permission" })
   } catch (error) {
-    return res.status(500).send({message:"There has been a problem update the evaluation"})
+    return res.status(500).send({ message: "There has been a problem" })
   }
 }
 
 
-module.exports = { authentication, isAdmin, isOwner ,isYourEvaluation};
+module.exports = { authentication, isAdmin, isUserOrAdmin, isYourEvaluationOrAdmin };

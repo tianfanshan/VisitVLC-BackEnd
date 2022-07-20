@@ -29,13 +29,29 @@ const EvaluationController = {
                 { score, comment },
                 { new: true, runValidators: true }
             )
-            res.status(200).send({ message: "Evaluation updated successfuly", evaluation })
+            res.status(200).send({ message: "Evaluation updated successfully", evaluation })
         } catch (error) {
             console.error(error);
             error.origin = "Evaluation";
             next(error);
         }
     },
+    async deleteEvaluation(req, res) {
+        try {
+            const id = await req.user.evaluationIds.map((e)=>{
+                return e.toString()
+              })
+            if(!id.includes(req.params._id)){
+                res.status(400).send({message:"This evaluation dose not exist"})
+            }else{
+                const evaluation = await Evaluation.findByIdAndDelete(req.params._id)
+                res.status(200).send({ message: "Evaluation delete successfully", evaluation })
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem deleting a evaluation" })
+        }
+    }
 };
 
 module.exports = EvaluationController;
