@@ -4,12 +4,12 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        minlength: [3,"Please enter at least three characters in the first name"],
+        minlength: [3, "Please enter at least three characters in the first name"],
         required: [true, "Please enter your first name"],
     },
     lastName: {
         type: String,
-        minlength: [3,"Please enter at least three characters in the last name"],
+        minlength: [3, "Please enter at least three characters in the last name"],
         required: [true, "Please enter your last name"],
     },
     role: {
@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
     tokens: [],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: String }],
-    favoritePlaceIds: [{ type: String }]
+    // favoritePlaceIds: [{ type: String }]
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function () {

@@ -21,4 +21,7 @@ router.delete(
   UserController.deleteUserById
 );
 
+router.put("/addToFavorite/:id", authentication, UserController.favoriteRoute);
+router.put("/favoriteRouteOut/:id", authentication, UserController.favoriteRouteOut);
+
 module.exports = router;

@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
+const axios = require("axios")
 
 const UserController = {
     async register(req, res, next) {
@@ -129,6 +130,40 @@ const UserController = {
             res.status(500).send(error);
         }
     },
+    async favoriteRoute(req, res) {
+        try {
+            if(req.user.favoriteRouteIds.includes(req.params.id)){
+                res.status(400).send({message:"Sorry this route is already exist in your favorite list"})
+            }else{
+                const user = await User.findByIdAndUpdate(
+                    req.user._id,
+                    { $push: { favoriteRouteIds: req.params.id } },
+                    { new: true }
+                )
+                res.status(201).send({ message: "Route add your favorite list", user })
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem adding favorite" })
+        }
+    },
+    async favoriteRouteOut(req, res) {
+        try {
+            if(req.user.favoriteRouteIds.includes(req.params.id)){
+                const user = await User.findByIdAndUpdate(
+                    req.user._id,
+                    { $pull: { favoriteRouteIds: req.params.id } },
+                    { new: true }
+                )
+                res.status(200).send({ message: "This route is no longer in your favorites", user })
+            }else{
+                res.status(404).send({message:"Sorry this route dose not exist"})
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem with server" })
+        }
+    }
 };
 
 module.exports = UserController;
