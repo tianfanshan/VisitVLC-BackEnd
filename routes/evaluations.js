@@ -5,6 +5,7 @@ const { authentication, isAdmin, isYourEvaluationOrAdmin } = require("../middlew
 
 router.post("/", authentication, EvaluationController.createEvaluation);
 router.put("/evaluationId/:_id", authentication, isYourEvaluationOrAdmin, EvaluationController.updateEvaluation);
-router.delete("/id/:_id", authentication, isYourEvaluationOrAdmin, EvaluationController.deleteEvaluation)
+router.delete("/id/:_id", authentication, isYourEvaluationOrAdmin, EvaluationController.deleteEvaluation);
+router.get("/", authentication, isAdmin, EvaluationController.getAllEvaluation);
 
 module.exports = router;

@@ -46,6 +46,15 @@ const EvaluationController = {
             console.error(error)
             res.status(500).send({ message: "There has been a problem deleting a evaluation" })
         }
+    },
+    async getAllEvaluation(req,res){
+        try {
+            const evaluations = await Evaluation.find()
+            res.status(200).send({message:"All evaluation finded",evaluations})
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({message:"There has been a problem to get all evaluations"})
+        }
     }
 };
 
