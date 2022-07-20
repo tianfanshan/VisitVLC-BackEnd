@@ -40,6 +40,12 @@ const EvaluationController = {
     async deleteEvaluation(req, res) {
         try {
             const evaluation = await Evaluation.findByIdAndDelete(req.params._id)
+            const user = await User.fin({evaluationIds:req.params._id});
+            user.forEach(async user=>{
+                await User.findByIdAndUpdate(user._id,
+                    {$pull:{evaluationIds:req.params._id}}
+                    )
+            })
             res.status(200).send({ message: "Evaluation delete successfully", evaluation })
         } catch (error) {
             console.error(error)
