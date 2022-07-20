@@ -39,7 +39,6 @@ const UserSchema = new mongoose.Schema({
         type: String
     },
     tokens: [],
-    commentIds: [{ type: ObjectId, ref: "Comment" }],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: String }],
     favoritePlaceIds: [{ type: String }]

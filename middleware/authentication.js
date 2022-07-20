@@ -45,5 +45,16 @@ const isOwner = async (req, res, next) => {
   }
 };
 
+const isYourEvaluation = async (req, res, next) => {
+  try {
+    if (!req.user.evaluationIds.includes(req.params._id)) {
+      return res.status(403).send({ message: "Sorry this is not you evaluation" })
+    }
+    next()
+  } catch (error) {
+    return res.status(500).send({message:"There has been a problem update the evaluation"})
+  }
+}
 
-module.exports = { authentication, isAdmin, isOwner };
+
+module.exports = { authentication, isAdmin, isOwner ,isYourEvaluation};
