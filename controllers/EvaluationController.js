@@ -2,6 +2,8 @@ const Evaluation = require("../models/Evaluation");
 const User = require("../models/User");
 const axios = require("axios")
 
+
+
 const EvaluationController = {
     async createEvaluation(req, res, next) {
         try {
@@ -38,15 +40,8 @@ const EvaluationController = {
     },
     async deleteEvaluation(req, res) {
         try {
-            const id = await req.user.evaluationIds.map((e)=>{
-                return e.toString()
-              })
-            if(!id.includes(req.params._id)){
-                res.status(400).send({message:"This evaluation dose not exist"})
-            }else{
-                const evaluation = await Evaluation.findByIdAndDelete(req.params._id)
-                res.status(200).send({ message: "Evaluation delete successfully", evaluation })
-            }
+            const evaluation = await Evaluation.findByIdAndDelete(req.params._id)
+            res.status(200).send({ message: "Evaluation delete successfully", evaluation })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem deleting a evaluation" })
