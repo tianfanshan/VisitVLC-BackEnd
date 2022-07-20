@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Evaluation = require("../models/Evaluation")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -119,6 +120,7 @@ const UserController = {
                 if (user == null) {
                     res.status(404).send({ message: "This user does not exist" });
                 } else {
+                    await Evaluation.deleteMany({ userId: req.params._id })
                     res.status(200).send({ message: "User delete successfyly", user });
                 }
             }
