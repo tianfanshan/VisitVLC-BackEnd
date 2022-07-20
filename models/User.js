@@ -15,10 +15,10 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String
     },
-    gender: {
-        type: String,
-        required: [true, "Please enter your gender"],
-    },
+    // gender: {
+    //     type: String,
+    //     required: [true, "Please enter your gender"],
+    // },
     email: {
         type: String,
         match: [
@@ -28,13 +28,13 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please enter your mail"],
         unique: true,
     },
-    dateOfBirth: {
-        type: Date,
-        required: [true, "Please enter your date of birth"]
-    },
-    disabled: {
-        type: Boolean
-    },
+    // dateOfBirth: {
+    //     type: Date,
+    //     required: [true, "Please enter your date of birth"]
+    // },
+    // disabled: {
+    //     type: Boolean
+    // },
     password: {
         type: String
     },
