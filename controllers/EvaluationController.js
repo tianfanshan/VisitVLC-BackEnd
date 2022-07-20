@@ -54,6 +54,15 @@ const EvaluationController = {
             console.error(error)
             res.status(500).send({ message: "There has been a problem to get all evaluations" })
         }
+    },
+    async getEvaluationById(req,res){
+        try {
+            const evaluation = await Evaluation.findById(req.params._id)
+            res.status(200).send({message:"Evaluation find successfully",evaluation})
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({message:"There has been a problem of serve"})
+        }
     }
 };
 
