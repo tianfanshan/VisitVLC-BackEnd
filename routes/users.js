@@ -28,4 +28,6 @@ router.put("/favoriteRouteOut/:id", authentication, UserController.favoriteRoute
 router.put("/addPlaceToFavorite/:id", authentication, UserController.favoritePlace);
 router.put("/favoritePlaceOut/:id", authentication, UserController.favoritePlaceOut);
 
+router.get("/routes",authentication,UserController.getAllroutes);
+
 module.exports = router;

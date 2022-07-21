@@ -4,7 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
+const get_route_by_id = process.env.get_route_by_id
 const axios = require("axios");
+
 
 const UserController = {
     async register(req, res, next) {
@@ -28,6 +30,14 @@ const UserController = {
     async login(req, res, next) {
         try {
             const user = await User.findOne({ email: req.body.email })
+            const routes = await user.favoriteRouteIds?.map(async (routeId) => {
+                const route = await axios.get(get_route_by_id + routeId)
+                return route.data
+            })
+            const places = user.favoritePlaceIds?.map(async (placeId) => {
+                const place = await axios.get("" + placeId)
+                return place
+            })
             if (!user) {
                 return res
                     .status(400)
@@ -43,17 +53,7 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            //------------------------------------------------------------
-            const routes = await User.favoriteRouteIds?.map(async (routeId) => {
-                const route = await axios.get("" + routeId)
-                return route
-            })
-            const places = await User.favoritePlaceIds?.map(async (placeId) => {
-                const place = await axios.get("" + placeId)
-                return place
-            })
-            //-----------------------------------------------------------
-            return res.send({ message: "Welcome " + user.firstName, token, user });
+            return res.send({ message: "Welcome " + user.firstName, token, user, routes });
         } catch (error) {
             console.error(error);
             error.origin = "User";
@@ -227,6 +227,16 @@ const UserController = {
             } else {
                 res.status(400).send({ message: "Pleace full your info" })
             }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem with server" })
+        }
+    },
+    async getAllroutes(req, res) {
+        try {
+            const result = await axios("https://api-routes-data.herokuapp.com/getRoutes/")
+            const routes = result.data
+            res.status(200).send({ message: "Routes found", routes })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with server" })
