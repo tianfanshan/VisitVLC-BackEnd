@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
 const axios = require("axios");
-const { findByIdAndUpdate } = require("../models/User");
 
 const UserController = {
     async register(req, res, next) {
@@ -45,12 +44,15 @@ const UserController = {
             user.tokens.push(token);
             await user.save();
             //------------------------------------------------------------
-            const routes = await user.favoriteRouteIds?.map(async (routeId) => {
+            const routes = await User.favoriteRouteIds?.map(async (routeId) => {
                 const route = await axios.get("" + routeId)
                 return route
             })
+            const places = await User.favoritePlaceIds?.map(async (placeId) => {
+                const place = await axios.get("" + placeId)
+                return place
+            })
             //-----------------------------------------------------------
-            console.log("login", user)
             return res.send({ message: "Welcome " + user.firstName, token, user });
         } catch (error) {
             console.error(error);
@@ -103,6 +105,10 @@ const UserController = {
                     const routes = user.favoriteRouteIds?.map(async (routeId) => {
                         const route = await axios.get("" + routeId)
                         return route
+                    })
+                    const places = await User.favoritePlaceIds?.map(async (placeId) => {
+                        const place = await axios.get("" + placeId)
+                        return place
                     })
                     //--------------------------------------------------------
                     res.status(200).send({ message: "User found successfully", user });
@@ -178,7 +184,7 @@ const UserController = {
             res.status(500).send({ message: "There has been a problem with server" })
         }
     },
-    async favoritePlace(req,res){
+    async favoritePlace(req, res) {
         try {
             if (req.user.favoritePlaceIds.includes(req.params.id)) {
                 res.status(400).send({ message: "Sorry this place is already exist in your favorite list" })
@@ -218,8 +224,8 @@ const UserController = {
             if (age || gender || accompaniment || duration || price || difficulty || transportation || typeOfRoute) {
                 const user = await User.findByIdAndUpdate(req.user._id, { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute, AIAvailable: true }, { new: true })
                 res.status(200).send({ message: "User updated", user })
-            }else{
-                res.status(400).send({message:"Pleace full your info"})
+            } else {
+                res.status(400).send({ message: "Pleace full your info" })
             }
         } catch (error) {
             console.error(error)
