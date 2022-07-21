@@ -15,10 +15,6 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String
     },
-    // gender: {
-    //     type: String,
-    //     required: [true, "Please enter your gender"],
-    // },
     email: {
         type: String,
         match: [
@@ -28,15 +24,36 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please enter your mail"],
         unique: true,
     },
-    // dateOfBirth: {
-    //     type: Date,
-    //     required: [true, "Please enter your date of birth"]
-    // },
-    // disabled: {
-    //     type: Boolean
-    // },
     password: {
         type: String
+    },
+    age: {
+        type: String
+    },
+    gender: {
+        type: String,
+    },
+    accompaniment: {
+        type: String
+    },
+    duration: {
+        type: String
+    },
+    price: {
+        type: String
+    },
+    difficulty: {
+        type: String
+    },
+    transportation: {
+        type: String
+    },
+    typeOfRoute: {
+        type: String
+    },
+    AIAvailable: {
+        type: Boolean,
+        default: false
     },
     tokens: [],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],

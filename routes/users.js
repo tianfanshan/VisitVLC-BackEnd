@@ -20,6 +20,7 @@ router.delete(
   isUserOrAdmin,
   UserController.deleteUserById
 );
+router.put("/fullUserInfo", authentication, UserController.fullUserInformation);
 
 router.put("/addToFavorite/:id", authentication, UserController.favoriteRoute);
 router.put("/favoriteRouteOut/:id", authentication, UserController.favoriteRouteOut);

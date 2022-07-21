@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
-const axios = require("axios")
+const axios = require("axios");
+const { findByIdAndUpdate } = require("../models/User");
 
 const UserController = {
     async register(req, res, next) {
@@ -27,7 +28,7 @@ const UserController = {
     },
     async login(req, res, next) {
         try {
-            const user = await User.findOne({ email: req.body.email });
+            const user = await User.findOne({ email: req.body.email })
             if (!user) {
                 return res
                     .status(400)
@@ -43,6 +44,13 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
+            //------------------------------------------------------------
+            const routes = await user.favoriteRouteIds?.map(async (routeId) => {
+                const route = await axios.get("" + routeId)
+                return route
+            })
+            //-----------------------------------------------------------
+            console.log("login", user)
             return res.send({ message: "Welcome " + user.firstName, token, user });
         } catch (error) {
             console.error(error);
@@ -91,6 +99,12 @@ const UserController = {
                 if (user == null) {
                     res.status(404).send({ message: "This user does not exist" });
                 } else {
+                    //---------------------------------------------------------
+                    const routes = user.favoriteRouteIds?.map(async (routeId) => {
+                        const route = await axios.get("" + routeId)
+                        return route
+                    })
+                    //--------------------------------------------------------
                     res.status(200).send({ message: "User found successfully", user });
                 }
             }
@@ -132,9 +146,9 @@ const UserController = {
     },
     async favoriteRoute(req, res) {
         try {
-            if(req.user.favoriteRouteIds.includes(req.params.id)){
-                res.status(400).send({message:"Sorry this route is already exist in your favorite list"})
-            }else{
+            if (req.user.favoriteRouteIds.includes(req.params.id)) {
+                res.status(400).send({ message: "Sorry this route is already exist in your favorite list" })
+            } else {
                 const user = await User.findByIdAndUpdate(
                     req.user._id,
                     { $push: { favoriteRouteIds: req.params.id } },
@@ -149,15 +163,29 @@ const UserController = {
     },
     async favoriteRouteOut(req, res) {
         try {
-            if(req.user.favoriteRouteIds.includes(req.params.id)){
+            if (req.user.favoriteRouteIds.includes(req.params.id)) {
                 const user = await User.findByIdAndUpdate(
                     req.user._id,
                     { $pull: { favoriteRouteIds: req.params.id } },
                     { new: true }
                 )
                 res.status(200).send({ message: "This route is no longer in your favorites", user })
+            } else {
+                res.status(404).send({ message: "Sorry this route dose not exist" })
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem with server" })
+        }
+    },
+    async fullUserInformation(req, res) {
+        try {
+            const { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute } = req.body
+            if (age || gender || accompaniment || duration || price || difficulty || transportation || typeOfRoute) {
+                const user = await User.findByIdAndUpdate(req.user._id, { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute, AIAvailable: true }, { new: true })
+                res.status(200).send({ message: "User updated", user })
             }else{
-                res.status(404).send({message:"Sorry this route dose not exist"})
+                res.status(400).send({message:"Pleace full your info"})
             }
         } catch (error) {
             console.error(error)
