@@ -171,7 +171,41 @@ const UserController = {
                 )
                 res.status(200).send({ message: "This route is no longer in your favorites", user })
             } else {
-                res.status(404).send({ message: "Sorry this route dose not exist" })
+                res.status(404).send({ message: "Sorry this route dose not exist in your favorite" })
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem with server" })
+        }
+    },
+    async favoritePlace(req,res){
+        try {
+            if (req.user.favoritePlaceIds.includes(req.params.id)) {
+                res.status(400).send({ message: "Sorry this place is already exist in your favorite list" })
+            } else {
+                const user = await User.findByIdAndUpdate(
+                    req.user._id,
+                    { $push: { favoritePlaceIds: req.params.id } },
+                    { new: true }
+                )
+                res.status(201).send({ message: "Place add your favorite list", user })
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem adding favorite" })
+        }
+    },
+    async favoritePlaceOut(req, res) {
+        try {
+            if (req.user.favoritePlaceIds.includes(req.params.id)) {
+                const user = await User.findByIdAndUpdate(
+                    req.user._id,
+                    { $pull: { favoritePlaceIds: req.params.id } },
+                    { new: true }
+                )
+                res.status(200).send({ message: "This place is no longer in your favorites", user })
+            } else {
+                res.status(404).send({ message: "Sorry this place dose not exist in your favorite" })
             }
         } catch (error) {
             console.error(error)

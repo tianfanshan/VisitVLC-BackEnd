@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema({
     tokens: [],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: String }],
-    // favoritePlaceIds: [{ type: String }]
+    favoritePlaceIds: [{ type: String }]
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function () {
