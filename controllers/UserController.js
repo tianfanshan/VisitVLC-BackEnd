@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
-const get_route_by_id = process.env.get_route_by_id
+const get_route_by_id = process.env.get_route_by_id;
+const get_place_by_id = process.env.get_route_by_id;
 const axios = require("axios");
 
 
@@ -30,14 +31,20 @@ const UserController = {
     async login(req, res, next) {
         try {
             const user = await User.findOne({ email: req.body.email })
-            const routes = await user.favoriteRouteIds?.map(async (routeId) => {
-                const route = await axios.get(get_route_by_id + routeId)
-                return route.data
-            })
-            const places = user.favoritePlaceIds?.map(async (placeId) => {
-                const place = await axios.get("" + placeId)
-                return place
-            })
+            let favoriteRoutes = []
+            if (user.favoriteRouteIds) {
+                for (const id of user.favoriteRouteIds) {
+                    const target = await axios.get(`${get_route_by_id}${id}`)
+                    favoriteRoutes = [...favoriteRoutes, target.data]
+                }
+            }
+            let favoritePlaces = []
+            if (user.favoritePlaceIds) {
+                for (const id of user.favoritePlaceIds) {
+                    const target = await axios.get(`${get_place_by_id}${id}`)
+                    favoritePlaces = [...favoritePlaces, target.data]
+                }
+            }
             if (!user) {
                 return res
                     .status(400)
@@ -53,7 +60,7 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            return res.send({ message: "Welcome " + user.firstName, token, user, routes });
+            return res.send({ message: "Welcome " + user.firstName, token, user, favoriteRoutes,favoritePlaces });
         } catch (error) {
             console.error(error);
             error.origin = "User";
