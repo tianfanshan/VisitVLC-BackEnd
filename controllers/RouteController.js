@@ -9,7 +9,20 @@ const RouteController = {
         try {
             const result = await axios(get_all_routes)
             const routes = result.data
-            res.status(200).send({ message: "Routes found", routes })
+            const evaluations = await Evaluation.find()
+            const evaluationRouteId = evaluations.map((route) => { return route.routeId })
+            const routeId = [...new Set(evaluationRouteId)]
+            let routesHasEvaluation = []
+            for (const id of routeId) {
+                const route = await axios.get(get_route_by_id + id)
+                const evaluation = await Evaluation.find({routeId:id})
+                let evaluationArray = [...evaluation]
+                let obj = Object.assign({},route.data,evaluationArray)
+                routesHasEvaluation.push(obj)
+            }
+            console.log(routesHasEvaluation)
+            const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o=>o.route_id === obj.route_id)||obj)
+            res.status(200).send({ message: "Routes found", routeWithEvaluation })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with server" })
@@ -19,7 +32,10 @@ const RouteController = {
         try {
             const result = await axios.get(get_route_by_id + req.params.id)
             const route = result.data
-            res.status(200).send({ message: "Route found", route })
+            const evaluations = await Evaluation.find({ routeId: req.params.id })
+            const scores = evaluations.map(evaluation => { return evaluation.score })
+            const averageScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
+            res.status(200).send({ message: "Route found", route, evaluations, averageScore })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with server" })
