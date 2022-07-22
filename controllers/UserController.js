@@ -3,7 +3,7 @@ const Evaluation = require("../models/Evaluation")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const jwt_secret = process.env.jwt_secret;
+const JWT_SECRET = process.env.JWT_SECRET;
 const GET_ROUTE_BY_ID = process.env.GET_ROUTE_BY_ID;
 const GET_PLACE_BY_ID = process.env.GET_PLACE_BY_ID;
 const axios = require("axios");
@@ -56,7 +56,7 @@ const UserController = {
                     .status(400)
                     .send({ message: "Incorrect username or password" });
             }
-            token = jwt.sign({ _id: user._id }, jwt_secret);
+            token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
