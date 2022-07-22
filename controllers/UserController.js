@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.jwt_secret;
-const get_route_by_id = process.env.get_route_by_id;
-const get_place_by_id = process.env.get_route_by_id;
+const GET_ROUTE_BY_ID = process.env.GET_ROUTE_BY_ID;
+const GET_PLACE_BY_ID = process.env.GET_PLACE_BY_ID;
 const axios = require("axios");
 
 
@@ -34,14 +34,14 @@ const UserController = {
             let favoriteRoutes = []
             if (user.favoriteRouteIds) {
                 for (const id of user.favoriteRouteIds) {
-                    const target = await axios.get(`${get_route_by_id}${id}`)
+                    const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
                     favoriteRoutes = [...favoriteRoutes, target.data]
                 }
             }
             let favoritePlaces = []
             if (user.favoritePlaceIds) {
                 for (const id of user.favoritePlaceIds) {
-                    const target = await axios.get(`${get_place_by_id}${id}`)
+                    const target = await axios.get(`${GET_PLACE_BY_ID}${id}`)
                     favoritePlaces = [...favoritePlaces, target.data]
                 }
             }
@@ -111,14 +111,14 @@ const UserController = {
                     let favoriteRoutes = []
                     if (user.favoriteRouteIds) {
                         for (const id of user.favoriteRouteIds) {
-                            const target = await axios.get(`${get_route_by_id}${id}`)
+                            const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
                             favoriteRoutes = [...favoriteRoutes, target.data]
                         }
                     }
                     let favoritePlaces = []
                     if (user.favoritePlaceIds) {
                         for (const id of user.favoritePlaceIds) {
-                            const target = await axios.get(`${get_place_by_id}${id}`)
+                            const target = await axios.get(`${GET_PLACE_BY_ID}${id}`)
                             favoritePlaces = [...favoritePlaces, target.data]
                         }
                     }

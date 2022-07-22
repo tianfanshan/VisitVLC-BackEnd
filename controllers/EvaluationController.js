@@ -1,7 +1,7 @@
 const Evaluation = require("../models/Evaluation");
 const User = require("../models/User");
 const axios = require("axios");
-const get_route_by_id = process.env.get_route_by_id
+const GET_ROUTE_BY_ID = process.env.GET_ROUTE_BY_ID
 
 
 const EvaluationController = {
@@ -18,7 +18,7 @@ const EvaluationController = {
                     { $push: { evaluationIds: evaluation._id } },
                     { new: true }
                 )
-                const result = await axios.get(get_route_by_id + req.params.id)
+                const result = await axios.get(GET_ROUTE_BY_ID + req.params.id)
                 const route = result.data
                 res.status(201).send([evaluation, user, route])
             }

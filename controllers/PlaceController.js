@@ -1,12 +1,12 @@
 require("dotenv").config();
 const axios = require("axios");
-const get_all_places = process.env.get_all_places;
-const get_place_by_id = process.env.get_place_by_id;
+const GET_ALL_PLACES = process.env.GET_ALL_PLACES;
+const GET_PLACE_BY_ID = process.env.GET_PLACE_BY_ID;
 
 const RouteController = {
     async getAllroutes(req, res) {
         try {
-            const result = await axios(get_all_places)
+            const result = await axios(GET_ALL_PLACES)
             const places = result.data
             res.status(200).send({ message: "Places found", places })
         } catch (error) {
@@ -16,7 +16,7 @@ const RouteController = {
     },
     async getPlaceById(req,res){
         try {
-            const result = await axios.get(get_place_by_id + req.params.id)
+            const result = await axios.get(GET_PLACE_BY_ID + req.params.id)
             const place = result.data
             res.status(200).send({message:"Place found",place})
         } catch (error) {
