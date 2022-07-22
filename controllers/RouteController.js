@@ -10,20 +10,19 @@ const RouteController = {
             const result = await axios(GET_ALL_ROUTES)
             const routes = result.data
             const evaluations = await Evaluation.find()
-            const evaluationRouteId = evaluations.map((route) => { return route.routeId })
+            const evaluationRouteId = evaluations.map(route => route.routeId)
             const routeId = [...new Set(evaluationRouteId)]
             let routesHasEvaluation = []
             for (const id of routeId) {
                 const route = await axios.get(GET_ROUTE_BY_ID + id)
-                const evaluation = await Evaluation.find({routeId:id})
-                const evaluationScore = evaluation.map((evaluation)=>{return evaluation.score})
+                const evaluation = await Evaluation.find({ routeId: id })
+                const evaluationScore = evaluation.map((evaluation) => { return evaluation.score })
                 const averageScore = (evaluationScore.reduce((a, b) => a + b, 0) / evaluationScore.length).toFixed(1)
-                let evaluationArray = [...evaluation,averageScore]
-                let obj = Object.assign({},route.data,evaluationArray)
+                const obj = {...route.data, averageScore: averageScore, evaluations: evaluation }
                 routesHasEvaluation.push(obj)
             }
-            const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o=>o.route_id === obj.route_id)||obj)
-            res.status(200).send({ message: "Routes found", routeWithEvaluation })
+            const routesWithEvaluation = routes.map(obj => routesHasEvaluation.find(o => o.route_id === obj.route_id) || obj)
+            res.status(200).send({ message: "Routes found", routesWithEvaluation })
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with server" })
@@ -59,7 +58,7 @@ const RouteController = {
                 resFinal[i].average = 0
                 resFinal[i].allRating.forEach(element => resFinal[i].average += element)
                 resFinal[i].average = (resFinal[i].average / resFinal[i].allRating.length).toFixed(1)
-                resFinal[i] = { ...route, ...routeInfo.data }
+                resFinal[i] = {...route, ...routeInfo.data }
             }
             resFinal.sort((b, a) => a.average - b.average)
             res.status(200).send(resFinal)
