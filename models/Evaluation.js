@@ -16,13 +16,11 @@ const EvaluationSchema = new mongoose.Schema({
         ref: "User"
     },
     routeId: {
-        type: String,
-        required: true
+        type: Number
     },
-    // placeId: {
-    //     type: String,
-    //     required: true
-    // }
+    placeId: {
+        type: Number
+    }
 }, { timestamps: true });
 
 const Evaluation = mongoose.model("Evaluation", EvaluationSchema);
