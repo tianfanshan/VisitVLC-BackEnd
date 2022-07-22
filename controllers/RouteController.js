@@ -16,11 +16,12 @@ const RouteController = {
             for (const id of routeId) {
                 const route = await axios.get(GET_ROUTE_BY_ID + id)
                 const evaluation = await Evaluation.find({routeId:id})
-                let evaluationArray = [...evaluation]
+                const evaluationScore = evaluation.map((evaluation)=>{return evaluation.score})
+                const averageScore = (evaluationScore.reduce((a, b) => a + b, 0) / evaluationScore.length).toFixed(1)
+                let evaluationArray = [...evaluation,averageScore]
                 let obj = Object.assign({},route.data,evaluationArray)
                 routesHasEvaluation.push(obj)
             }
-            console.log(routesHasEvaluation)
             const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o=>o.route_id === obj.route_id)||obj)
             res.status(200).send({ message: "Routes found", routeWithEvaluation })
         } catch (error) {
