@@ -16,6 +16,7 @@ dbConnection();
 app.use("/users", require("./routes/users"));
 app.use("/evaluations",require("./routes/evaluations"));
 app.use("/routes",require("./routes/routes"));
+app.use("/places",require("./routes/places"));
 
 app.use(TypeError);
 

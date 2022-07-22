@@ -60,7 +60,7 @@ const UserController = {
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            return res.send({ message: "Welcome " + user.firstName, token, user, favoriteRoutes,favoritePlaces });
+            return res.send({ message: "Welcome " + user.firstName, token, user, favoriteRoutes, favoritePlaces });
         } catch (error) {
             console.error(error);
             error.origin = "User";
@@ -108,17 +108,21 @@ const UserController = {
                 if (user == null) {
                     res.status(404).send({ message: "This user does not exist" });
                 } else {
-                    //---------------------------------------------------------
-                    const routes = user.favoriteRouteIds?.map(async (routeId) => {
-                        const route = await axios.get("" + routeId)
-                        return route
-                    })
-                    const places = await User.favoritePlaceIds?.map(async (placeId) => {
-                        const place = await axios.get("" + placeId)
-                        return place
-                    })
-                    //--------------------------------------------------------
-                    res.status(200).send({ message: "User found successfully", user });
+                    let favoriteRoutes = []
+                    if (user.favoriteRouteIds) {
+                        for (const id of user.favoriteRouteIds) {
+                            const target = await axios.get(`${get_route_by_id}${id}`)
+                            favoriteRoutes = [...favoriteRoutes, target.data]
+                        }
+                    }
+                    let favoritePlaces = []
+                    if (user.favoritePlaceIds) {
+                        for (const id of user.favoritePlaceIds) {
+                            const target = await axios.get(`${get_place_by_id}${id}`)
+                            favoritePlaces = [...favoritePlaces, target.data]
+                        }
+                    }
+                    res.status(200).send({ message: "User found successfully", user, favoriteRoutes, favoritePlaces });
                 }
             }
         } catch (error) {
@@ -133,6 +137,7 @@ const UserController = {
             const users = await User.find()
                 .limit(limit)
                 .skip(page * limit)
+                console.log(users)
             res.status(200).send({ message: "All users found", users });
         } catch (error) {
             console.error(error);
