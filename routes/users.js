@@ -11,7 +11,7 @@ const {
 router.post("/", UserController.register);
 router.post("/login", UserController.login);
 router.delete("/logout", authentication, UserController.logout);
-router.put("/update", authentication, isUserOrAdmin, UserController.update);
+router.put("/update", authentication, UserController.update);
 router.get("/user_Id/:_id", authentication, isAdmin, UserController.findUserById);
 router.get("/users", authentication, isAdmin, UserController.findAllUser);
 router.delete(
@@ -21,11 +21,5 @@ router.delete(
   UserController.deleteUserById
 );
 router.put("/fullUserInfo", authentication, UserController.fullUserInformation);
-
-router.put("/addToFavorite/:id", authentication, UserController.favoriteRoute);
-router.put("/favoriteRouteOut/:id", authentication, UserController.favoriteRouteOut);
-
-router.put("/addPlaceToFavorite/:id", authentication, UserController.favoritePlace);
-router.put("/favoritePlaceOut/:id", authentication, UserController.favoritePlaceOut);
 
 module.exports = router;

@@ -1,15 +1,15 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const jwt_secret = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authentication = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const payload = jwt.verify(token, jwt_secret);
+    const payload = jwt.verify(token, JWT_SECRET);
     const user = await User.findOne({ _id: payload._id, tokens: token });
     if (!user) {
-      return res.status(401).send({ message: "You are not authorized" });
+      return res.status(401).send({ message: "Usted no está autorizado" });
     }
     req.user = user;
     next();
@@ -17,7 +17,7 @@ const authentication = async (req, res, next) => {
     console.error(error);
     return res
       .status(500)
-      .send({ error, message: "There has been a problem with the token" });
+      .send({ error, message: "Hay un problema con el token" });
   }
 };
 
@@ -25,7 +25,7 @@ const isAdmin = async (req, res, next) => {
   const admins = ["admin"];
   if (!admins.includes(req.user.role)) {
     return res.status(403).send({
-      message: "You do not have permission",
+      message: "No tienes permiso",
     });
   }
   next();
@@ -36,11 +36,11 @@ const isUserOrAdmin = async (req, res, next) => {
     if (req.user.role == "admin" || req.user._id == req.params._id) {
       return next()
     } else {
-      res.status(400).send({ message: "You do not have permission" })
+      res.status(400).send({ message: "No tienes permiso" })
     }
   } catch (error) {
     console.error(error)
-    res.status(500).send({ message: "There has been a problem with serve" })
+    res.status(500).send({ message: "Hubo un problema con el servidor" })
   }
 }
 
@@ -52,9 +52,9 @@ const isYourEvaluationOrAdmin = async (req, res, next) => {
     if (id.includes(req.params._id) || req.user.role == "admin") {
       return next()
     }
-    return res.status(403).send({ message: "Sorry you have not permission" })
+    return res.status(403).send({ message: "No tienes permiso" })
   } catch (error) {
-    return res.status(500).send({ message: "There has been a problem" })
+    return res.status(500).send({ message: "Hubo un problema con el servidor" })
   }
 }
 
