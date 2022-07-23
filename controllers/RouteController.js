@@ -9,6 +9,7 @@ const RouteController = {
         try {
             const result = await axios(get_all_routes)
             const routes = result.data
+            console.log(routes)
             const evaluations = await Evaluation.find()
             const evaluationRouteId = evaluations.map((route) => { return route.routeId })
             const routeId = [...new Set(evaluationRouteId)]
@@ -64,6 +65,20 @@ const RouteController = {
             res.status(200).send(resFinal)
         } catch (error) {
             res.send(error)
+        }
+    },
+    async getRouteByName(req, res) {
+        try {
+            const result = await axios.get(get_all_routes)
+            const route = result.data
+            console.log(route)
+            const search = route.filter(function(eachRoute){
+                return eachRoute.name === req.params.name
+            })
+            res.status(200).send(search)
+        } catch (error) {
+            console.error(error)
+            res.status(500).send({ message: "There has been a problem with the name" })
         }
     }
 
