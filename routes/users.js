@@ -22,10 +22,4 @@ router.delete(
 );
 router.put("/fullUserInfo", authentication, UserController.fullUserInformation);
 
-router.put("/addToFavorite/:id", authentication, UserController.favoriteRoute);
-router.put("/favoriteRouteOut/:id", authentication, UserController.favoriteRouteOut);
-
-router.put("/addPlaceToFavorite/:id", authentication, UserController.favoritePlace);
-router.put("/favoritePlaceOut/:id", authentication, UserController.favoritePlaceOut);
-
 module.exports = router;

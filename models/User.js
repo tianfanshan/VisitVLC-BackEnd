@@ -4,13 +4,13 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        minlength: [3, "Please enter at least three characters in the first name"],
-        required: [true, "Please enter your first name"],
+        minlength: [3, "Por favor ingrese al menos 3 caracteres"],
+        required: [true, "Por favor, introduzca su nombre"],
     },
     lastName: {
         type: String,
-        minlength: [3, "Please enter at least three characters in the last name"],
-        required: [true, "Please enter your last name"],
+        minlength: [3, "Por favor ingrese al menos 3 caracteres"],
+        required: [true, "Por favor, introduzca su apellido"],
     },
     role: {
         type: String
@@ -19,9 +19,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            "The email format is incorrect",
+            "El formato del correo está incorrecto",
         ],
-        required: [true, "Please enter your mail"],
+        required: [true, "Por favor introduzca su correo"],
         unique: true,
     },
     password: {

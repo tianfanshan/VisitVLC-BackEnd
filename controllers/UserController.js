@@ -18,9 +18,9 @@ const UserController = {
                     ...req.body,
                     role: "user",
                 });
-                res.status(201).send({ message: "User created", user });
+                res.status(201).send({ message: "Usuario registrado", user });
             } else {
-                res.status(400).send({ message: "Please enter your password" });
+                res.status(400).send({ message: "Por favor, introduzca su contraseña" });
             }
         } catch (error) {
             console.error(error);
@@ -48,19 +48,19 @@ const UserController = {
             if (!user) {
                 return res
                     .status(400)
-                    .send({ message: "Incorrect username or password" });
+                    .send({ message: "Correo de usuario o contraseña incorrecta" });
             }
             const isMatch = bcrypt.compareSync(req.body.password, user.password);
             if (!isMatch) {
                 return res
                     .status(400)
-                    .send({ message: "Incorrect username or password" });
+                    .send({ message: "Correo de usuario o contraseña incorrecta" });
             }
             token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
             await user.save();
-            return res.send({ message: "Welcome " + user.firstName, token, user, favoriteRoutes, favoritePlaces });
+            return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes, favoritePlaces });
         } catch (error) {
             console.error(error);
             error.origin = "User";
@@ -72,18 +72,18 @@ const UserController = {
             const user = await User.findByIdAndUpdate(req.user._id, {
                 $pull: { tokens: req.headers.authorization },
             });
-            res.status(200).send({ message: "User logged out successfully", user });
+            res.status(200).send({ message: "Usuario cerró la sesión con éxito", user });
         } catch (error) {
             console.error(error);
             res
                 .status(500)
-                .send({ message: "there has been a problem disconnecting the user" });
+                .send({ message: "Hubo un problema con el servidor al cerrar sesión" });
         }
     },
     async update(req, res, next) {
         try {
             if (!req.body.password) {
-                res.status(400).send({ message: "Please enter you password" })
+                res.status(400).send({ message: "Por favor, introduzca su contraseña" })
             }
             const { firstName, lastName, gender, disabled } = req.body;
             const hashpassword = bcrypt.hashSync(req.body.password, 10);
@@ -92,7 +92,7 @@ const UserController = {
                 { firstName, password: hashpassword, lastName, gender, disabled },
                 { new: true, runValidators: true, }
             );
-            res.status(200).send({ message: "User update successfully", user });
+            res.status(200).send({ message: "Información de usuario actualizada con éxito", user });
         } catch (error) {
             console.error(error);
             error.origin = "User";
@@ -102,11 +102,11 @@ const UserController = {
     async findUserById(req, res) {
         try {
             if (req.params._id.length !== 24) {
-                res.status(400).send({ message: "This user dose not exist" })
+                res.status(400).send({ message: "Este usuario no existe" })
             } else {
                 const user = await User.findById(req.params._id);
                 if (user == null) {
-                    res.status(404).send({ message: "This user does not exist" });
+                    res.status(404).send({ message: "Este usuario no existe" });
                 } else {
                     let favoriteRoutes = []
                     if (user.favoriteRouteIds) {
@@ -122,7 +122,7 @@ const UserController = {
                             favoritePlaces = [...favoritePlaces, target.data]
                         }
                     }
-                    res.status(200).send({ message: "User found successfully", user, favoriteRoutes, favoritePlaces });
+                    res.status(200).send({ message: "Usuario encontrado", user, favoriteRoutes, favoritePlaces });
                 }
             }
         } catch (error) {
@@ -138,7 +138,7 @@ const UserController = {
                 .limit(limit)
                 .skip(page * limit)
                 console.log(users)
-            res.status(200).send({ message: "All users found", users });
+            res.status(200).send({ message: "Todos los usuarios encontrado", users });
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
@@ -147,14 +147,14 @@ const UserController = {
     async deleteUserById(req, res) {
         try {
             if (req.params._id.length !== 24) {
-                res.status(400).send({ message: "This user dose not exist" })
+                res.status(400).send({ message: "Este usuario no existe" })
             } else {
                 const user = await User.findByIdAndDelete(req.params._id);
                 if (user == null) {
-                    res.status(404).send({ message: "This user does not exist" });
+                    res.status(404).send({ message: "Este usuario no existe" });
                 } else {
                     await Evaluation.deleteMany({ userId: req.params._id })
-                    res.status(200).send({ message: "User delete successfyly", user });
+                    res.status(200).send({ message: "Usuario eliminado con éxito", user });
                 }
             }
         } catch (error) {
@@ -162,86 +162,18 @@ const UserController = {
             res.status(500).send(error);
         }
     },
-    async favoriteRoute(req, res) {
-        try {
-            if (req.user.favoriteRouteIds.includes(req.params.id)) {
-                res.status(400).send({ message: "Sorry this route is already exist in your favorite list" })
-            } else {
-                const user = await User.findByIdAndUpdate(
-                    req.user._id,
-                    { $push: { favoriteRouteIds: req.params.id } },
-                    { new: true }
-                )
-                res.status(201).send({ message: "Route add your favorite list", user })
-            }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send({ message: "There has been a problem adding favorite" })
-        }
-    },
-    async favoriteRouteOut(req, res) {
-        try {
-            if (req.user.favoriteRouteIds.includes(req.params.id)) {
-                const user = await User.findByIdAndUpdate(
-                    req.user._id,
-                    { $pull: { favoriteRouteIds: req.params.id } },
-                    { new: true }
-                )
-                res.status(200).send({ message: "This route is no longer in your favorites", user })
-            } else {
-                res.status(404).send({ message: "Sorry this route dose not exist in your favorite" })
-            }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send({ message: "There has been a problem with server" })
-        }
-    },
-    async favoritePlace(req, res) {
-        try {
-            if (req.user.favoritePlaceIds.includes(req.params.id)) {
-                res.status(400).send({ message: "Sorry this place is already exist in your favorite list" })
-            } else {
-                const user = await User.findByIdAndUpdate(
-                    req.user._id,
-                    { $push: { favoritePlaceIds: req.params.id } },
-                    { new: true }
-                )
-                res.status(201).send({ message: "Place add your favorite list", user })
-            }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send({ message: "There has been a problem adding favorite" })
-        }
-    },
-    async favoritePlaceOut(req, res) {
-        try {
-            if (req.user.favoritePlaceIds.includes(req.params.id)) {
-                const user = await User.findByIdAndUpdate(
-                    req.user._id,
-                    { $pull: { favoritePlaceIds: req.params.id } },
-                    { new: true }
-                )
-                res.status(200).send({ message: "This place is no longer in your favorites", user })
-            } else {
-                res.status(404).send({ message: "Sorry this place dose not exist in your favorite" })
-            }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send({ message: "There has been a problem with server" })
-        }
-    },
     async fullUserInformation(req, res) {
         try {
             const { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute } = req.body
             if (age || gender || accompaniment || duration || price || difficulty || transportation || typeOfRoute) {
                 const user = await User.findByIdAndUpdate(req.user._id, { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute, AIAvailable: true }, { new: true })
-                res.status(200).send({ message: "User updated", user })
+                res.status(200).send({ message: "La información del usuario completada", user })
             } else {
-                res.status(400).send({ message: "Pleace full your info" })
+                res.status(400).send({ message: "Por favor, completa tu información" })
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: "There has been a problem with server" })
+            res.status(500).send({ message: "Hubo un problema con el servidor al completar la información del usuario" })
         }
     }
 };

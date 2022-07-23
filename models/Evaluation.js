@@ -4,12 +4,12 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const EvaluationSchema = new mongoose.Schema({
     comment: {
         type: String,
-        minlength: [20,"We need your suggestion, please write at least 20 characters"],
-        required: [true, "This is very helpful to improve our tourism environment, please write something"]
+        minlength: [20,"Necesitamos su sugerencia, por favor ingrese al menos 20 caracteres"],
+        required: [true, "Tu sugerencia es muy importate para nosotros"]
     },
     score: {
         type: Number,
-        required: [true, "Please rate the route, it's important to us"]
+        required: [true, "Por favor califique la ruta"]
     },
     userId: {
         type: ObjectId,
