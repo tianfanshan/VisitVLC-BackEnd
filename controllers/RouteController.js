@@ -70,9 +70,9 @@ const RouteController = {
     async getRouteByName(req, res) {
         try {
             const result = await axios.get(get_all_routes)
-            const route = result.data
-            console.log(route)
-            const search = route.filter(function(eachRoute){
+            const routes = result.data
+            // console.log(routes)
+            const search = routes.filter(function(eachRoute){
                 return eachRoute.name === req.params.name
             })
             res.status(200).send(search)
