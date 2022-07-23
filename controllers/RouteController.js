@@ -9,20 +9,18 @@ const RouteController = {
         try {
             const result = await axios(get_all_routes)
             const routes = result.data
-            console.log(routes)
             const evaluations = await Evaluation.find()
             const evaluationRouteId = evaluations.map((route) => { return route.routeId })
             const routeId = [...new Set(evaluationRouteId)]
             let routesHasEvaluation = []
             for (const id of routeId) {
                 const route = await axios.get(get_route_by_id + id)
-                const evaluation = await Evaluation.find({routeId:id})
+                const evaluation = await Evaluation.find({ routeId: id })
                 let evaluationArray = [...evaluation]
-                let obj = Object.assign({},route.data,evaluationArray)
+                let obj = Object.assign({}, route.data, evaluationArray)
                 routesHasEvaluation.push(obj)
             }
-            console.log(routesHasEvaluation)
-            const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o=>o.route_id === obj.route_id)||obj)
+            const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o => o.route_id === obj.route_id) || obj)
             res.status(200).send({ message: "Routes found", routeWithEvaluation })
         } catch (error) {
             console.error(error)
@@ -59,7 +57,7 @@ const RouteController = {
                 resFinal[i].average = 0
                 resFinal[i].allRating.forEach(element => resFinal[i].average += element)
                 resFinal[i].average = (resFinal[i].average / resFinal[i].allRating.length).toFixed(1)
-                resFinal[i] = { ...route, ...routeInfo.data }
+                resFinal[i] = {...route, ...routeInfo.data }
             }
             resFinal.sort((b, a) => a.average - b.average)
             res.status(200).send(resFinal)
@@ -70,18 +68,15 @@ const RouteController = {
     async getRouteByName(req, res) {
         try {
             const result = await axios.get(get_all_routes)
-            const route = result.data
-            console.log(route)
-            const search = route.filter(function(eachRoute){
-                return eachRoute.name === req.params.name
-            })
-            res.status(200).send(search)
+            const routes = result.data
+            const search = new RegExp(req.params.name, "i");
+            const resp = routes.filter(({ name }) => name.match(search))
+            res.status(200).send(resp)
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with the name" })
         }
     }
-
 }
 
 module.exports = RouteController;
