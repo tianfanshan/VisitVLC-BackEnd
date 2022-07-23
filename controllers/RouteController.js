@@ -54,14 +54,20 @@ const RouteController = {
                     resFinal.push({ routeId: evaluation.routeId, allRating: [evaluation.score] })
                 }
             })
+            console.log(resFinal)
             for (let [i, route] of resFinal.entries()) {
-                const routeInfo = await axios.get(`${GET_ROUTE_BY_ID}${route.routeId}`)
                 resFinal[i].average = 0
                 resFinal[i].allRating.forEach(element => resFinal[i].average += element)
                 resFinal[i].average = (resFinal[i].average / resFinal[i].allRating.length).toFixed(1)
-                resFinal[i] = {...route, ...routeInfo.data }
+                resFinal[i] = {...route }
             }
             resFinal.sort((b, a) => a.average - b.average)
+            resFinal = resFinal.slice(0, 5)
+            console.log(resFinal)
+            for (let [i, route] of resFinal.entries()) {
+                const routeInfo = await axios.get(`${GET_ROUTE_BY_ID}${route.routeId}`)
+                resFinal[i] = {...route, ...routeInfo.data }
+            }
             res.status(200).send(resFinal)
         } catch (error) {
             res.send(error)
