@@ -31,20 +31,6 @@ const UserController = {
     async login(req, res, next) {
         try {
             const user = await User.findOne({ email: req.body.email })
-            let favoriteRoutes = []
-            if (user.favoriteRouteIds) {
-                for (const id of user.favoriteRouteIds) {
-                    const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
-                    favoriteRoutes = [...favoriteRoutes, target.data]
-                }
-            }
-            let favoritePlaces = []
-            if (user.favoritePlaceIds) {
-                for (const id of user.favoritePlaceIds) {
-                    const target = await axios.get(`${GET_PLACE_BY_ID}${id}`)
-                    favoritePlaces = [...favoritePlaces, target.data]
-                }
-            }
             if (!user) {
                 return res
                     .status(400)
@@ -59,6 +45,20 @@ const UserController = {
             token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
+            let favoritePlaces = []
+            if (user.favoritePlaceIds) {
+                for (const id of user.favoritePlaceIds) {
+                    const target = await axios.get(`${GET_PLACE_BY_ID}${id}`)
+                    favoritePlaces = [...favoritePlaces, target.data]
+                }
+            }
+            let favoriteRoutes = []
+            if (user.favoriteRouteIds) {
+                for (const id of user.favoriteRouteIds) {
+                    const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
+                    favoriteRoutes = [...favoriteRoutes, target.data]
+                }
+            }
             await user.save();
             return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes, favoritePlaces });
         } catch (error) {
@@ -137,7 +137,6 @@ const UserController = {
             const users = await User.find()
                 .limit(limit)
                 .skip(page * limit)
-                console.log(users)
             res.status(200).send({ message: "Todos los usuarios encontrado", users });
         } catch (error) {
             console.error(error);

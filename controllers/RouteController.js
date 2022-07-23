@@ -19,7 +19,7 @@ const RouteController = {
                 const evaluation = await Evaluation.find({ routeId: id })
                 const evaluationScore = evaluation.map((evaluation) => { return evaluation.score })
                 const averageScore = (evaluationScore.reduce((a, b) => a + b, 0) / evaluationScore.length).toFixed(1)
-                const obj = {...route.data, averageScore: averageScore, evaluations: evaluation }
+                const obj = { ...route.data, averageScore: averageScore, evaluations: evaluation }
                 routesHasEvaluation.push(obj)
             }
             const routesWithEvaluation = routes.map(obj => routesHasEvaluation.find(o => o.route_id === obj.route_id) || obj)
@@ -54,19 +54,17 @@ const RouteController = {
                     resFinal.push({ routeId: evaluation.routeId, allRating: [evaluation.score] })
                 }
             })
-            console.log(resFinal)
             for (let [i, route] of resFinal.entries()) {
                 resFinal[i].average = 0
                 resFinal[i].allRating.forEach(element => resFinal[i].average += element)
                 resFinal[i].average = (resFinal[i].average / resFinal[i].allRating.length).toFixed(1)
-                resFinal[i] = {...route }
+                resFinal[i] = { ...route }
             }
             resFinal.sort((b, a) => a.average - b.average)
             resFinal = resFinal.slice(0, 5)
-            console.log(resFinal)
             for (let [i, route] of resFinal.entries()) {
                 const routeInfo = await axios.get(`${GET_ROUTE_BY_ID}${route.routeId}`)
-                resFinal[i] = {...route, ...routeInfo.data }
+                resFinal[i] = { ...route, ...routeInfo.data }
             }
             res.status(200).send(resFinal)
         } catch (error) {
@@ -79,7 +77,11 @@ const RouteController = {
             const routes = result.data
             const search = new RegExp(req.params.name, "i");
             const resp = routes.filter(({ name }) => name.match(search))
-            res.status(200).send(resp)
+            if (resp.length == 0) {
+                res.status(404).send({ message: "No hay la ruta que estas buscando" })
+            } else {
+                res.status(200).send(resp)
+            }
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with the name" })

@@ -4,7 +4,7 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const EvaluationSchema = new mongoose.Schema({
     comment: {
         type: String,
-        minlength: [20,"Necesitamos su sugerencia, por favor ingrese al menos 20 caracteres"],
+        minlength: [20, "Necesitamos su sugerencia, por favor ingrese al menos 20 caracteres"],
         required: [true, "Tu sugerencia es muy importate para nosotros"]
     },
     score: {
