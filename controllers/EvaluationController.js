@@ -1,14 +1,14 @@
 const Evaluation = require("../models/Evaluation");
 const User = require("../models/User");
 const axios = require("axios");
-const get_route_by_id = process.env.get_route_by_id
+const GET_ROUTE_BY_ID = process.env.GET_ROUTE_BY_ID
 
 
 const EvaluationController = {
     async createEvaluationOfRoute(req, res, next) {
         try {
             if (!req.params.id) {
-                res.status(400).send({ message: "Pleace select the route" })
+                res.status(400).send({ message: "Por favor seleccione una ruta" })
             } else {
                 const evaluation = await Evaluation.create(
                     { ...req.body, userId: req.user._id, routeId: req.params.id }
@@ -18,7 +18,7 @@ const EvaluationController = {
                     { $push: { evaluationIds: evaluation._id } },
                     { new: true }
                 )
-                const result = await axios.get(get_route_by_id + req.params.id)
+                const result = await axios.get(GET_ROUTE_BY_ID + req.params.id)
                 const route = result.data
                 res.status(201).send([evaluation, user, route])
             }
@@ -28,15 +28,6 @@ const EvaluationController = {
             next(error);
         }
     },
-    // async createEvaluationOfPlace(req,res){
-    //     try {
-    //         const evaluation = await Evaluation.create(
-    //             {...req.body,userId:req.user._id,}
-    //         )
-    //     } catch (error) {
-
-    //     }
-    // },
     async updateEvaluation(req, res, next) {
         try {
             const { score, comment } = req.body
@@ -45,7 +36,7 @@ const EvaluationController = {
                 { score, comment },
                 { new: true, runValidators: true }
             )
-            res.status(200).send({ message: "Evaluation updated successfully", evaluation })
+            res.status(200).send({ message: "Evaluación actualizada con éxito", evaluation })
         } catch (error) {
             console.error(error);
             error.origin = "Evaluation";
@@ -61,28 +52,28 @@ const EvaluationController = {
                     { $pull: { evaluationIds: req.params._id } }
                 )
             })
-            res.status(200).send({ message: "Evaluation delete successfully", evaluation })
+            res.status(200).send({ message: "Evaluación eliminada con éxito", evaluation })
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: "There has been a problem deleting a evaluation" })
+            res.status(500).send({ message: "Hubo un problema con el servidor al eliminar la evaluación" })
         }
     },
     async getAllEvaluation(req, res) {
         try {
             const evaluations = await Evaluation.find()
-            res.status(200).send({ message: "All evaluation finded", evaluations })
+            res.status(200).send({ message: "Todas las evaluaciónes encontrada", evaluations })
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: "There has been a problem to get all evaluations" })
+            res.status(500).send({ message: "Hubo un problema con el servidor al mostrar todas las evaluaciónes" })
         }
     },
     async getEvaluationById(req, res) {
         try {
             const evaluation = await Evaluation.findById(req.params._id)
-            res.status(200).send({ message: "Evaluation find successfully", evaluation })
+            res.status(200).send({ message: "Evaluación encontrada", evaluation })
         } catch (error) {
             console.error(error)
-            res.status(500).send({ message: "There has been a problem of serve" })
+            res.status(500).send({ message: "Hubo un problema al mostrar la evaluación" })
         }
     }
 };

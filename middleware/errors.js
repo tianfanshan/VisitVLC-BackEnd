@@ -17,11 +17,11 @@ const TypeError = (err, req, res, next) => {
   if (err.name === "ValidationError") {
     return (err = handleValidationError(err, res));
   } else if (err.code === 11000) {
-    res.status(400).send(`The ${Object.keys(err.keyPattern)} has to be unique`);
+    res.status(400).send(`El ${Object.keys(err.keyPattern)} tiene que ser unico`);
   } else if (errOrigin === undefined) {
-    res.status(500).send("An error of unknown origin has occurred");
+    res.status(500).send("Se ha producido un error de origen desconocido");
   } else {
-    res.status(500).send(`There has been a problem creating a ${errOrigin}`);
+    res.status(500).send(`Hubo un problema al crear un ${errOrigin}`);
   }
 };
 
