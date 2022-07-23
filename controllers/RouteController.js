@@ -22,6 +22,7 @@ const RouteController = {
                 let obj = Object.assign({},route.data,evaluationArray)
                 routesHasEvaluation.push(obj)
             }
+            console.log(typeof(routesHasEvaluation))
             const routeWithEvaluation = routes.map(obj => routesHasEvaluation.find(o=>o.route_id === obj.route_id)||obj)
             res.status(200).send({ message: "Routes found", routeWithEvaluation })
         } catch (error) {
