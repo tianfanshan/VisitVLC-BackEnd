@@ -5,7 +5,7 @@ const GET_ALL_PLACES = process.env.GET_ALL_PLACES;
 const GET_PLACE_BY_ID = process.env.GET_PLACE_BY_ID;
 
 const RouteController = {
-    async getAllroutes(req, res) {
+    async getAllPlaces(req, res) {
         try {
             const result = await axios(GET_ALL_PLACES)
             const places = result.data
