@@ -1,9 +1,9 @@
 const handleValidationError = (err, res) => {
   let errors = Object.values(err.errors).map((el) => el.message);
-  if (errors.length > 1) {
-    let chain = "";
+  if (errors.length) {
+    let chain = "Por favor introduzca su ";
     for (let i = 0; i < errors.length; i++) {
-      chain += errors[i] + "||";
+      chain += errors[i] + " , ";
     }
     const string = chain.slice(0, -4);
     res.status(400).send({ messages: string });
@@ -21,7 +21,7 @@ const TypeError = (err, req, res, next) => {
   } else if (errOrigin === undefined) {
     res.status(500).send("Se ha producido un error de origen desconocido");
   } else {
-    res.status(500).send(`Hubo un problema al crear un ${errOrigin}`);
+    res.status(500).send(`Hubo un problema al crear ${errOrigin}`);
   }
 };
 

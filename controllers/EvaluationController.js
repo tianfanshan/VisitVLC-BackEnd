@@ -36,6 +36,9 @@ const EvaluationController = {
                 { score, comment },
                 { new: true, runValidators: true }
             )
+            if (!evaluation) {
+                res.status(404).send({ message: "Esta evaluación ya no existe" })
+            }
             res.status(200).send({ message: "Evaluación actualizada con éxito", evaluation })
         } catch (error) {
             console.error(error);
@@ -46,13 +49,17 @@ const EvaluationController = {
     async deleteEvaluation(req, res) {
         try {
             const evaluation = await Evaluation.findByIdAndDelete(req.params._id)
-            const user = await User.find({ evaluationIds: req.params._id });
-            user.forEach(async user => {
-                await User.findByIdAndUpdate(user._id,
-                    { $pull: { evaluationIds: req.params._id } }
-                )
-            })
-            res.status(200).send({ message: "Evaluación eliminada con éxito", evaluation })
+            if (!evaluation) {
+                res.status(404).send({ message: "Esta evaluación ya no existe" })
+            } else {
+                const user = await User.find({ evaluationIds: req.params._id });
+                user.forEach(async user => {
+                    await User.findByIdAndUpdate(user._id,
+                        { $pull: { evaluationIds: req.params._id } }
+                    )
+                })
+                res.status(200).send({ message: "Evaluación eliminada con éxito", evaluation })
+            }
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "Hubo un problema con el servidor al eliminar la evaluación" })
@@ -70,7 +77,11 @@ const EvaluationController = {
     async getEvaluationById(req, res) {
         try {
             const evaluation = await Evaluation.findById(req.params._id)
-            res.status(200).send({ message: "Evaluación encontrada", evaluation })
+            if (!evaluation) {
+                res.status(404).send({ message: "Esta evaluación ya no existe" })
+            } else {
+                res.status(200).send({ message: "Evaluación encontrada", evaluation })
+            }
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "Hubo un problema al mostrar la evaluación" })
