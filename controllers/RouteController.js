@@ -55,12 +55,8 @@ const RouteController = {
                 }
             })
             for (let [i, route] of resFinal.entries()) {
-<<<<<<< HEAD
                 const routeInfo = await axios.get(`${GET_ROUTE_BY_ID}${route.routeId}`)
                 resFinal[i].average = 0 
-=======
-                resFinal[i].average = 0
->>>>>>> develop
                 resFinal[i].allRating.forEach(element => resFinal[i].average += element)
                 resFinal[i].average = (resFinal[i].average / resFinal[i].allRating.length).toFixed(1)
                 resFinal[i] = { ...route }
@@ -80,13 +76,39 @@ const RouteController = {
         try {
             const result = await axios.get(GET_ALL_ROUTES)
             const routes = result.data
-            const search = new RegExp(req.params.name, "i");
-            const resp = routes.filter(({ name }) => name.match(search))
+
+            const searchName = new RegExp(req.params.name, "i");
+            let resp = routes.filter(({ name }) => name.match(searchName))
             if (resp.length == 0) {
                 res.status(404).send({ message: "No hay la ruta que estas buscando" })
             } else {
                 res.status(200).send(resp)
             }
+
+            const searchType = new RegExp(req.body.body, "i")
+            resp = routes.filter(({ type }) => type.match(searchType))
+            if (resp.length == 0) {
+                res.status(404).send({ message: "No hay la ruta que estas buscando1" })
+            } else {
+                res.status(200).send(resp)
+            }
+
+            const searchDifficulty = new RegExp(req.body.difficulty, "i")
+            resp = routes.filter(({ difficulty }) => difficulty.match(searchDifficulty))
+            if (resp.length == 0) {
+                res.status(404).send({ message: "No hay la ruta que estas buscando2" })
+            } else {
+                res.status(200).send(resp)
+            }
+
+            const searchDuration = new RegExp(req.body.duration, "i")
+            resp = routes.filter(({ duration }) => duration.match(searchDuration))
+            if (resp.length == 0) {
+                res.status(404).send({ message: "No hay la ruta que estas buscando3" })
+            } else {
+                res.status(200).send(resp)
+            }
+
         } catch (error) {
             console.error(error)
             res.status(500).send({ message: "There has been a problem with the name" })
