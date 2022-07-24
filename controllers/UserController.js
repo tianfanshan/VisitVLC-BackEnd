@@ -45,6 +45,7 @@ const UserController = {
             token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
+            await user.save();
             let favoritePlaces = []
             if (user.favoritePlaceIds) {
                 for (const id of user.favoritePlaceIds) {
@@ -57,10 +58,10 @@ const UserController = {
                 for (const id of user.favoriteRouteIds) {
                     const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
                     favoriteRoutes = [...favoriteRoutes, target.data]
+                    console.log(favoriteRoutes)
                 }
             }
-            await user.save();
-            return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes, favoritePlaces });
+            return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes });
         } catch (error) {
             console.error(error);
             error.origin = "User";
@@ -84,9 +85,7 @@ const UserController = {
         try {
             const { firstName, lastName, gender } = req.body;
             const user = await User.findByIdAndUpdate(
-                req.user._id,
-                { firstName, lastName, gender },
-                { new: true, runValidators: true, }
+                req.user._id, { firstName, lastName, gender }, { new: true, runValidators: true, }
             );
             res.status(200).send({ message: "Información de usuario actualizada con éxito", user });
         } catch (error) {
@@ -97,14 +96,12 @@ const UserController = {
     },
     async changeUserPassword(req, res) {
         try {
-            if(!req.body.password){
-                res.status(400).send({message:"Por favor introduzca contraseña"})
-            }else{
+            if (!req.body.password) {
+                res.status(400).send({ message: "Por favor introduzca contraseña" })
+            } else {
                 const hashPassword = bcrypt.hashSync(req.body.password, 10);
                 const user = await User.findByIdAndUpdate(
-                    req.user._id,
-                    { password: hashPassword },
-                    { new: true, runValidators: true }
+                    req.user._id, { password: hashPassword }, { new: true, runValidators: true }
                 )
                 res.status(200).send({ message: "Contraseña cambiada", user })
             }
