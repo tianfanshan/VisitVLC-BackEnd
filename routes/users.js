@@ -21,5 +21,6 @@ router.delete(
   UserController.deleteUserById
 );
 router.put("/fullUserInfo", authentication, UserController.fullUserInformation);
+router.get("/favoriteRoutes", authentication, UserController.getFavoriteRoute);
 
 module.exports = router;

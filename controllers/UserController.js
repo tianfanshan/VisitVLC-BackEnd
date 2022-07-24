@@ -174,6 +174,21 @@ const UserController = {
             console.error(error)
             res.status(500).send({ message: "Hubo un problema con el servidor al completar la información del usuario" })
         }
+    },
+    async getFavoriteRoute(req, res) {
+        try {
+            const user = await User.findById(req.user._id)
+            const favoriteRouteId = user.favoriteRouteIds
+            const favoriteRoute = []
+            for (const id of favoriteRouteId) {
+                const favoriteRoutes = await axios.get(GET_ROUTE_BY_ID + id)
+                favoriteRoute.push(favoriteRoutes.data)
+            }
+            res.send(favoriteRoute)
+        } catch (error) {
+            console.error(error)
+            res.send(error)
+        }
     }
 };
 
