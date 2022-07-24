@@ -78,14 +78,12 @@ const RouteController = {
             const routes = result.data
             const searchName = new RegExp(req.body.name, "i");
             let resp = routes.filter(({ name }) => name.match(searchName))
-            console.log(resp)
             const searchType = new RegExp(req.body.type, "i")
             resp = resp.filter(({ type }) => type.match(searchType))
             const searchDifficulty = new RegExp(req.body.difficulty, "i")
             resp = resp.filter(({ difficulty }) => difficulty.match(searchDifficulty))
             const searchTransport = new RegExp(req.body.transport, "i")
             resp = resp.filter(({ transport }) => transport.match(searchTransport))
-
 
             if (resp.length == 0) {
                 res.status(404).send({ message: "No hay la ruta que estas buscando" })
@@ -97,6 +95,7 @@ const RouteController = {
             res.status(500).send({ message: "There has been a problem with the name" })
         }
     },
+    
     async favoriteRoute(req, res) {
         try {
             if (req.user.favoriteRouteIds.includes(req.params.id)) {
