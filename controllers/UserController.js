@@ -82,14 +82,10 @@ const UserController = {
     },
     async update(req, res, next) {
         try {
-            if (!req.body.password) {
-                res.status(400).send({ message: "Por favor, introduzca su contraseña" })
-            }
-            const { firstName, lastName, gender, disabled } = req.body;
-            const hashpassword = bcrypt.hashSync(req.body.password, 10);
+            const { firstName, lastName, gender } = req.body;
             const user = await User.findByIdAndUpdate(
                 req.user._id,
-                { firstName, password: hashpassword, lastName, gender, disabled },
+                { firstName, lastName, gender },
                 { new: true, runValidators: true, }
             );
             res.status(200).send({ message: "Información de usuario actualizada con éxito", user });
@@ -97,6 +93,25 @@ const UserController = {
             console.error(error);
             error.origin = "User";
             next(error);
+        }
+    },
+    async changeUserPassword(req, res) {
+        try {
+            if(!req.body.password){
+                res.status(400).send({message:"Por favor introduzca contraseña"})
+            }else{
+                const hashPassword = bcrypt.hashSync(req.body.password, 10);
+                const user = await User.findByIdAndUpdate(
+                    req.user._id,
+                    { password: hashPassword },
+                    { new: true, runValidators: true }
+                )
+                res.status(200).send({ message: "Contraseña cambiada", user })
+            }
+        } catch (error) {
+            console.error(error);
+            error.origin = "User";
+            next(error)
         }
     },
     async findUserById(req, res) {

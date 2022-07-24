@@ -22,5 +22,6 @@ router.delete(
 );
 router.put("/fullUserInfo", authentication, UserController.fullUserInformation);
 router.get("/favoriteRoutes", authentication, UserController.getFavoriteRoute);
+router.put("/changeUserPassword", authentication, UserController.changeUserPassword)
 
 module.exports = router;
