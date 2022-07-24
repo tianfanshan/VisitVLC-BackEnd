@@ -85,7 +85,7 @@ const RouteController = {
                 res.status(200).send(resp)
             }
 
-            const searchType = new RegExp(req.body.body, "i")
+            const searchType = new RegExp(req.body.type, "i")
             resp = routes.filter(({ type }) => type.match(searchType))
             if (resp.length == 0) {
                 res.status(404).send({ message: "No hay la ruta que estas buscando1" })
