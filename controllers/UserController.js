@@ -58,7 +58,6 @@ const UserController = {
                 for (const id of user.favoriteRouteIds) {
                     const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
                     favoriteRoutes = [...favoriteRoutes, target.data]
-                    console.log(favoriteRoutes)
                 }
             }
             return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes });
@@ -197,6 +196,24 @@ const UserController = {
                 favoriteRoute.push(favoriteRoutes.data)
             }
             res.send(favoriteRoute)
+        } catch (error) {
+            console.error(error)
+            res.send(error)
+        }
+    },
+    async currentUserInfo(req, res) {
+        try {
+            const user = await User.findById(req.user._id)
+            let favoriteRoutes = []
+            if (user.favoriteRouteIds) {
+                for (const id of user.favoriteRouteIds) {
+                    const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
+                    favoriteRoutes = [...favoriteRoutes, target.data]
+                }
+                res.send({ user, favoriteRoutes })
+            } else {
+                res.send(user)
+            }
         } catch (error) {
             console.error(error)
             res.send(error)
