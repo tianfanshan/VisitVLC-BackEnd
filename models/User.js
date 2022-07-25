@@ -58,10 +58,11 @@ const UserSchema = new mongoose.Schema({
     tokens: [],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: Number }],
-    favoritePlaceIds: [{ type: Number }]
+    favoritePlaceIds: [{ type: Number }],
+    AITicket: { type: Number }
 }, { timestamps: true });
 
-UserSchema.methods.toJSON = function () {
+UserSchema.methods.toJSON = function() {
     const user = this._doc;
     delete user.tokens;
     delete user.password;
