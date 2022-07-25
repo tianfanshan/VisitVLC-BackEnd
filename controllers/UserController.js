@@ -204,16 +204,21 @@ const UserController = {
     async currentUserInfo(req, res) {
         try {
             const user = await User.findById(req.user._id)
+                .populate("evaluationIds")
             let favoriteRoutes = []
             if (user.favoriteRouteIds) {
                 for (const id of user.favoriteRouteIds) {
                     const target = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
                     favoriteRoutes = [...favoriteRoutes, target.data]
                 }
-                res.send({ user, favoriteRoutes })
-            } else {
-                res.send(user)
             }
+            let evaluationsRoutes = []
+            for (const evaluation of user.evaluationIds) {
+                const id = evaluation.routeId
+                const evaluationsRoute = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
+                evaluationsRoutes.push(evaluationsRoute.data)
+            }
+            res.send({ user, favoriteRoutes, evaluationsRoutes })
         } catch (error) {
             console.error(error)
             res.send(error)
