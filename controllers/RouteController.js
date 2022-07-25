@@ -95,7 +95,7 @@ const RouteController = {
             res.status(500).send({ message: "There has been a problem with the name" })
         }
     },
-    
+
     async favoriteRoute(req, res) {
         try {
             if (req.user.favoriteRouteIds.includes(req.params.id)) {

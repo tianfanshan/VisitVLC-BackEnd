@@ -183,13 +183,12 @@ const UserController = {
             try {
                 const { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute } = req.body
                 if (age || gender || accompaniment || duration || price || difficulty || transportation || typeOfRoute) {
-                    console.log(`https://api-routes-data.herokuapp.com/postUser/?${age?`age=${age}&`:""}${gender?`gender=${gender}&`:""}${duration?`time=${duration}&`:""}${typeOfRoute?`route_type=${typeOfRoute}&`:""}${price?`price=${price}&`:""}${difficulty?`difficulty=${difficulty}&`:""}${accompaniment?`companions=${accompaniment}&`:""}${transportation?`transport=${transportation}`:""}`)
+                    // * CONSOLE.LOG DE LA RUTA A SOLICITAR => console.log(`https://api-routes-data.herokuapp.com/postUser/?${age?`age=${age}&`:""}${gender?`gender=${gender}&`:""}${duration?`time=${duration}&`:""}${typeOfRoute?`route_type=${typeOfRoute}&`:""}${price?`price=${price}&`:""}${difficulty?`difficulty=${difficulty}&`:""}${accompaniment?`companions=${accompaniment}&`:""}${transportation?`transport=${transportation}`:""}`)
                     const ticket = await axios.post(`https://api-routes-data.herokuapp.com/postUser/?${age?`age=${age}&`:""}${gender?`gender=${gender}&`:""}${duration?`time=${duration}&`:""}${typeOfRoute?`route_type=${typeOfRoute}&`:""}${price?`price=${price}&`:""}${difficulty?`difficulty=${difficulty}&`:""}${accompaniment?`companions=${accompaniment}&`:""}${transportation?`transport=${transportation}`:""}`)
-                    
-
-                // const user = await User.findByIdAndUpdate(req.user._id, { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute, AIAvailable: true }, { new: true })
-                // res.status(200).send({ message: "La información del usuario completada", user })
-                res.send(ticket)
+                    // * ENDPOINT FUNCIONA SIEMPRE => const ticket = await axios.post('https://api-routes-data.herokuapp.com/postUser/?userId=62dd488128d047a850ad1211&age=1994&gender=mujer&time=48&route_type=patrimonio&price=gratis&difficulty=baja&companions=solo')
+                    // ! AQUÍ SE GUARDA LA INFO EN EL USUARIO => const user = await User.findByIdAndUpdate(req.user._id, { age, gender, accompaniment, duration, price, difficulty, transportation, typeOfRoute, AIAvailable: true }, { new: true })
+                    // ? RESPUESTA INICIAL => res.status(200).send({ message: "La información del usuario completada", user })
+                res.send(ticket.data)
             } else {
                 res.status(400).send({ message: "Por favor, completa tu información" })
             }
