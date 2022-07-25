@@ -31,6 +31,7 @@ const UserController = {
     async login(req, res, next) {
         try {
             const user = await User.findOne({ email: req.body.email })
+            .populate("evaluationIds")
             if (!user) {
                 return res
                     .status(400)
@@ -60,7 +61,13 @@ const UserController = {
                     favoriteRoutes = [...favoriteRoutes, target.data]
                 }
             }
-            return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes });
+            let evaluationsRoutes = []
+            for (const evaluation of user.evaluationIds) {
+                const id = evaluation.routeId
+                const evaluationsRoute = await axios.get(`${GET_ROUTE_BY_ID}${id}`)
+                evaluationsRoutes.push(evaluationsRoute.data)
+            }
+            return res.send({ message: "Bienvenid@ " + user.firstName, token, user, favoriteRoutes,evaluationsRoutes });
         } catch (error) {
             console.error(error);
             error.origin = "User";
