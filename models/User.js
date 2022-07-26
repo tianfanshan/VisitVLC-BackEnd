@@ -55,11 +55,11 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    recomendedRoute: { type: String },
     tokens: [],
     evaluationIds: [{ type: ObjectId, ref: "Evaluation" }],
     favoriteRouteIds: [{ type: Number }],
     favoritePlaceIds: [{ type: Number }],
-    AITicket: { type: Number }
 }, { timestamps: true });
 
 UserSchema.methods.toJSON = function() {
